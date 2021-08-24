@@ -288,6 +288,10 @@
           <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
           <Private>True</Private>
         </Reference>
+        <Reference Include="MoreComplexDataStructures, Version=1.9.1.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\packages\MoreComplexDataStructures.1.9.1\lib\netstandard2.0\MoreComplexDataStructures.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="mscorlib" />
         <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
           <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -472,7 +476,7 @@
         <Compile Include="App_Start\UnityConfig.cs" />
         <Compile Include="App_Start\WebApiConfig.cs" />
         <Compile Include="Controllers\IndexController.cs" />
-        <Compile Include="Core\IndexingService.cs" />
+        <Compile Include="Core\IndexingServiceQueue.cs" />
         <Compile Include="Global.asax.cs">
             <DependentUpon>Global.asax</DependentUpon>
         </Compile>

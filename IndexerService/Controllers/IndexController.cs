@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -63,7 +64,7 @@ namespace IndexerService.Controllers
                     if (document.Id <= lastId)
                     {
                         string idStr = document.Id.ToString();
-                        modelStateDictionary[idStr] = new ModelState()
+                        modelStateDictionary[idStr] = new ModelState
                         {
                             Value = new ValueProviderResult("error: this id has already been indexed",
                                 "error: this id has already been indexed", CultureInfo.CurrentCulture)
@@ -76,9 +77,9 @@ namespace IndexerService.Controllers
                     return BadRequest(modelStateDictionary);
                 }
                 
-                foreach (var document in data)
+                foreach (var document in data.OrderBy(doc => doc.Id))
                 {
-                    _client.Enqueue(() => IndexingService.Index(document));
+                    IndexingServiceQueue.Enqueue(document);
                 }
                 return new ResponseMessageResult(Request.CreateResponse(HttpStatusCode.Accepted, "document queued for indexing"));
             }
