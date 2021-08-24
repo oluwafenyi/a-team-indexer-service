@@ -2,6 +2,7 @@ using Newtonsoft.Json.Serialization;
 
 using System.Web.Http;
 using System.Web.Http.Cors;
+using Swagger.Net.Application;
 
 namespace IndexerService
 {
@@ -12,10 +13,12 @@ namespace IndexerService
             // Web API configuration and services
             var cors = new EnableCorsAttribute("*", "*", "*");
             config.EnableCors(cors);
-            
+
+            config.EnableSwagger(c => c.SingleApiVersion("v1", "Searchify Indexing Service")).EnableSwaggerUi();
+
             // Web API routes
             config.MapHttpAttributeRoutes();
-
+            
             // Set JSON formatter as default one and remove XmlFormatter
             var jsonFormatter = config.Formatters.JsonFormatter;
             jsonFormatter.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

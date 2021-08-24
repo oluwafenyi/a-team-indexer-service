@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using System.Net;
 using System.Net.Http;
@@ -23,10 +24,18 @@ namespace IndexerService.Controllers
             _client = client;
         }
 
+        [Route("")]
+        [HttpGet]
+        public IHttpActionResult Root()
+        {
+            string url = Request.RequestUri.GetLeftPart(UriPartial.Authority);
+            return Redirect(url + "/swagger/ui/index");
+        }
+
         // GET: api/
         [Route("api/")]
         [HttpGet]
-        public IHttpActionResult Root()
+        public IHttpActionResult Ping()
         {
             if (HttpContext.Current.Request.QueryString["marco"] != null)
             {

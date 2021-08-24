@@ -4,6 +4,7 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using Owin;
 using SearchEngine.Database;
+using GlobalConfiguration = Hangfire.GlobalConfiguration;
 
 namespace IndexerService
 {
@@ -20,7 +21,7 @@ namespace IndexerService
             Console.WriteLine("db initialized");
 
             GlobalConfiguration.Configuration.UseMemoryStorage();
-            
+
             app.UseHangfireDashboard();
             app.UseHangfireServer();
         }
