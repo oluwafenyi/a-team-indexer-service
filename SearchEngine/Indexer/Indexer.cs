@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -78,38 +79,45 @@ namespace SearchEngine.Indexer
         /// <param name="fileId">unique integer id for document</param>
         public async Task Index(string filePath, uint fileId)
         {
-            // local map of word to positions
-            Dictionary<string, List<uint>> map = new Dictionary<string, List<uint>>();
-            TextExtractionResult content = _textExtractor.Extract(filePath);
-
-            // generate list of relevant words for indexing
-            string[] tokens = Tokenizer.Tokenizer.Tokenize(content.Text);
-
-            uint pos = 0;
-            
-            // iterate over tokens and store their positions in local map
-            foreach (var token in tokens)
+            try
             {
-                pos++;
-                
-                if (!map.ContainsKey(token))
+                // local map of word to positions
+                Dictionary<string, List<uint>> map = new Dictionary<string, List<uint>>();
+                TextExtractionResult content = _textExtractor.Extract(filePath);
+
+                // generate list of relevant words for indexing
+                string[] tokens = Tokenizer.Tokenizer.Tokenize(content.Text);
+
+                uint pos = 0;
+            
+                // iterate over tokens and store their positions in local map
+                foreach (var token in tokens)
                 {
-                    map.Add(token, new List<uint>());
+                    pos++;
+                
+                    if (!map.ContainsKey(token))
+                    {
+                        map.Add(token, new List<uint>());
+                    }
+                
+                    map[token].Add(pos);
+                }
+            
+                // iterate over local map and index word, delta and positions
+                foreach (var word in map.Keys)
+                {
+                    uint total = await SumDeltasInTermList(word);
+                    uint delta = fileId - total;
+                    await _indexWord(word, delta, map[word]);
                 }
                 
-                map[token].Add(pos);
+                LastId = fileId;
+                await InvertedIndex.SetLastId(fileId);
             }
-            
-            // iterate over local map and index word, delta and positions
-            foreach (var word in map.Keys)
+            catch (Exception e)
             {
-                uint total = await SumDeltasInTermList(word);
-                uint delta = fileId - total;
-                await _indexWord(word, delta, map[word]);
+                Console.WriteLine(e);
             }
-
-            LastId = fileId;
-            await InvertedIndex.SetLastId(fileId);
         }
     }
 }

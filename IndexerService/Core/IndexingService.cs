@@ -10,7 +10,8 @@ namespace IndexerService.Core
     public static class IndexingService
     {
         
-        [DisableConcurrentExecution(timeoutInSeconds: 60 * 10)]
+        [DisableConcurrentExecution(60 * 10)]
+        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         public static async Task Index(Document doc)
         {
             uint lastId = await InvertedIndex.GetLastId();

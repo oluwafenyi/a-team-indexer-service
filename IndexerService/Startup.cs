@@ -22,8 +22,12 @@ namespace IndexerService
 
             GlobalConfiguration.Configuration.UseMemoryStorage();
 
+            var options = new BackgroundJobServerOptions
+            {
+                WorkerCount = 1
+            };
             app.UseHangfireDashboard();
-            app.UseHangfireServer();
+            app.UseHangfireServer(options);
         }
     }
 }
