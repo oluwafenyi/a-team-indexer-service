@@ -1,10 +1,12 @@
-using System;
+using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.ModelBinding;
 using System.Web.Http.Results;
+using System.Web.Http.ValueProviders;
 using Hangfire;
 using IndexerService.Core;
 using IndexerService.Models;
@@ -40,17 +42,35 @@ namespace IndexerService.Controllers
         // POST: api/index/
         [Route("api/index/")]
         [HttpPost]
-        public async Task<IHttpActionResult> Index(Document data)
+        public async Task<IHttpActionResult> Index(Document[] data)
         {
             if (ModelState.IsValid)
             {
+                ModelStateDictionary modelStateDictionary = new ModelStateDictionary();
                 uint lastId = await InvertedIndex.GetLastId();
-                if (data.Id <= lastId)
+                
+                foreach (var document in data)
                 {
-                    return BadRequest();
+                    if (document.Id <= lastId)
+                    {
+                        string idStr = document.Id.ToString();
+                        modelStateDictionary[idStr] = new ModelState()
+                        {
+                            Value = new ValueProviderResult("error: this id has already been indexed",
+                                "error: this id has already been indexed", CultureInfo.CurrentCulture)
+                        };
+                    }
+                }
+
+                if (modelStateDictionary.Keys.Count > 0)
+                {
+                    return BadRequest(modelStateDictionary);
                 }
                 
-                _client.Enqueue(() => IndexingService.Index(data));
+                foreach (var document in data)
+                {
+                    _client.Enqueue(() => IndexingService.Index(document));
+                }
                 return new ResponseMessageResult(Request.CreateResponse(HttpStatusCode.Accepted, "document queued for indexing"));
             }
 
