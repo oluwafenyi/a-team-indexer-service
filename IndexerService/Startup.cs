@@ -18,7 +18,15 @@ namespace IndexerService
 
             Task.Run(async () =>
             {
-                DbClient.CreateClient(true);
+                string env = Environment.GetEnvironmentVariable("NET_ENV") ?? "Development";
+                if (env  == "Development")
+                {
+                    DbClient.CreateClient(true);
+                }
+                else
+                {
+                    DbClient.CreateClient(false);
+                }
                 await DbClient.CreateTables();
             }).GetAwaiter().GetResult();
             Console.WriteLine("db initialized");

@@ -1,0 +1,22 @@
+version: "3.2"
+services:
+  indexer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    tty: true
+    depends_on:
+      - db_store
+    environment:
+      - "ACCESS_KEY=test"
+      - "SECRET_KEY=test"
+      - "DATABASE_HOST=localhost"
+      - "DATABASE_PORT=8000"
+    network_mode: "host"
+  db_store:
+    image: "amazon/dynamodb-local:latest"
+    ports:
+      - "8000:8000" 
+    network_mode: "host"

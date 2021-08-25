@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime.CredentialManagement;
 using SearchEngine.Database.Models;
 
 namespace SearchEngine.Database
@@ -31,8 +32,22 @@ namespace SearchEngine.Database
             return true;
         }
 
+        private static void WriteProfile(string profileName)
+        {
+            var options = new CredentialProfileOptions
+            {
+                AccessKey = Environment.GetEnvironmentVariable("ACCESS_KEY") ?? "null",
+                SecretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ?? "null"
+            };
+            var profile = new CredentialProfile(profileName, options);
+            var sharedFile = new SharedCredentialsFile();
+            sharedFile.RegisterProfile(profile);
+        }
+
         public static bool CreateClient(bool useLocal)
         {
+            WriteProfile("default");
+            
             if (useLocal)
             {
                 var portUsed = IsPortInUse();
