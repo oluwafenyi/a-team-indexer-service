@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SearchEngine.Database.Models;
+using SearchifyEngine.Store;
 using TikaOnDotNet.TextExtraction;
 
-namespace SearchEngine.Indexer
+namespace SearchifyEngine.Indexer
 {
 
     /// <summary>
@@ -21,7 +20,18 @@ namespace SearchEngine.Indexer
         
         private TextExtractor _textExtractor = new TextExtractor();
 
+        private IStore _store;
+
         public Dictionary<string, IndexTerm[]> ReverseIndex = new Dictionary<string, IndexTerm[]>();
+        
+        public Indexer(IStore store)
+        {
+            _store = store;
+            Task.Run(async () =>
+            {
+                LastId = await store.GetLastId();
+            }).GetAwaiter().GetResult();
+        }
 
         public async Task LoadInvertedIndex(string[] queryTerms)
         {
@@ -38,12 +48,6 @@ namespace SearchEngine.Indexer
             return ReverseIndex[term];
         }
 
-        public Indexer(uint lastId)
-        {
-            LastId = lastId;
-        }
-        
-
         // initializes and appends index term to internal index
         private async Task _indexWord(string word, uint fileId, List<uint> positions)
         {
@@ -51,7 +55,7 @@ namespace SearchEngine.Indexer
             indexTerm = new IndexTerm(fileId);
             List<uint> deltaArrayList = Utils.ToDeltaList(positions);
             indexTerm.AddPositions(deltaArrayList.ToArray());
-            await InvertedIndex.AppendIndexTerm(word, indexTerm);
+            await _store.AppendIndexTerm(word, indexTerm);
         }
 
         /// <summary>
@@ -61,7 +65,7 @@ namespace SearchEngine.Indexer
         /// <returns>Index list of word</returns>
         public async Task<IndexTerm[]> GetIndexTermArray(string word)
         {
-            List<IndexTerm> list = await InvertedIndex.GetIndexTermList(word);
+            List<IndexTerm> list = await _store.GetIndexTermList(word);
             return list.ToArray();
         }
 
@@ -87,20 +91,20 @@ namespace SearchEngine.Indexer
             string[] tokens = Tokenizer.Tokenizer.Tokenize(content.Text);
 
             uint pos = 0;
-        
+            
             // iterate over tokens and store their positions in local map
             foreach (var token in tokens)
             {
                 pos++;
-            
+                
                 if (!map.ContainsKey(token))
                 {
                     map.Add(token, new List<uint>());
                 }
-            
+                
                 map[token].Add(pos);
             }
-        
+            
             // iterate over local map and index word, delta and positions
             foreach (var word in map.Keys)
             {
@@ -108,9 +112,9 @@ namespace SearchEngine.Indexer
                 uint delta = fileId - total;
                 await _indexWord(word, delta, map[word]);
             }
-            
+
             LastId = fileId;
-            await InvertedIndex.SetLastId(fileId);
+            await _store.SetLastId(fileId);
         }
     }
 }

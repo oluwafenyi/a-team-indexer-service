@@ -504,6 +504,10 @@
         <Project>{48667948-1080-4fc0-a553-cef0a8b20659}</Project>
         <Name>SearchEngine</Name>
       </ProjectReference>
+      <ProjectReference Include="..\SearchifyEngine\SearchifyEngine.csproj">
+        <Project>{6b7b50fe-03cf-4bea-87c1-f07518a484e8}</Project>
+        <Name>SearchifyEngine</Name>
+      </ProjectReference>
     </ItemGroup>
     <PropertyGroup>
         <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -10,10 +10,10 @@ services:
     depends_on:
       - db_store
     environment:
-      - "ACCESS_KEY=test"
-      - "SECRET_KEY=test"
-      - "DATABASE_HOST=localhost"
-      - "DATABASE_PORT=8000"
+      - "AWS_ACCESS_KEY=test"
+      - "AWS_SECRET_KEY=test"
+      - "DYNAMO_DATABASE_HOST=localhost"
+      - "DYNAMO_DATABASE_PORT=8000"
     network_mode: "host"
   db_store:
     image: "amazon/dynamodb-local:latest"

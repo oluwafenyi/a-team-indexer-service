@@ -1,0 +1,17 @@
+using System;
+using System.IO;
+using InvertedTomato.Compression.Integers;
+
+namespace SearchifyEngine
+{
+    /// <summary>
+    /// Application Constants
+    /// </summary>
+    public static class Config
+    {
+        public static readonly string DatabaseHost = Environment.GetEnvironmentVariable("DYNAMO_DATABASE_HOST") ?? "localhost";
+        public static readonly int DatabasePort = Environment.GetEnvironmentVariable("DYNAMO_DATABASE_PORT") != null ? Convert.ToInt32(Environment.GetEnvironmentVariable("DYNAMO_DATABASE_PORT")) : 8000;
+        
+        public static readonly Codec Codec = new FibonacciCodec();
+    }
+}

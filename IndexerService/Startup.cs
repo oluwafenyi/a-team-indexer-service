@@ -4,9 +4,8 @@ using Hangfire;
 using Hangfire.MemoryStorage;
 using IndexerService.Core;
 using Owin;
-using SearchEngine.Database;
-using SearchEngine.Database.Models;
-using SearchEngine.Indexer;
+using SearchifyEngine.Database;
+using SearchifyEngine.Indexer;
 using GlobalConfiguration = Hangfire.GlobalConfiguration;
 
 namespace IndexerService
@@ -29,6 +28,7 @@ namespace IndexerService
                 }
                 await DbClient.CreateTables();
             }).GetAwaiter().GetResult();
+
             Console.WriteLine("db initialized");
 
             GlobalConfiguration.Configuration.UseMemoryStorage();
@@ -47,6 +47,7 @@ namespace IndexerService
         [DisableConcurrentExecution(60 * 10)]
         public static async Task LongRunningTask()
         {
+            Indexer indexer = new Indexer(DbClient.Store);
             while(true)
             {
                 try
@@ -54,9 +55,6 @@ namespace IndexerService
                     var doc = IndexingServiceQueue.Pop();
                     if (doc != null)
                     {
-                        uint lastId = await InvertedIndex.GetLastId();
-                        Indexer indexer = new Indexer(lastId);
-            
                         Console.WriteLine("indexing file id: {0}", doc.Id);
                         await indexer.Index(doc.Url, doc.Id);
                         Console.WriteLine("file {0} finished indexing", doc.Id);

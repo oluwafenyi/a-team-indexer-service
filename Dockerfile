@@ -17,16 +17,18 @@ COPY ./IndexerService/IndexerService.csproj ./IndexerService/IndexerService.cspr
 
 COPY ./IndexerService/packages.config ./IndexerService/packages.config
 
-COPY ./SearchEngine/SearchEngine.csproj ./SearchEngine/SearchEngine.csproj
+COPY ./SearchifyEngine/SearchifyEngine.csproj ./SearchifyEngine/SearchifyEngine.csproj
 
-COPY ./SearchEngine/packages.config ./SearchEngine/packages.config
+COPY ./SearchifyEngine/packages.config ./SearchifyEngine/packages.config
 
 
 RUN $nuget restore IndexerService.sln
 
 COPY . .
 
-RUN msbuild ./IndexerService/IndexerService.csproj /p:PackageLocation="..\PublishOutput\ZipWebApiApp" /p:DeployOnBuild=true /p:Configuration=Release /p:WebPublishMethod=Package /p:DeployTarget=WebPublish /p:AutoParameterizationWebConfigConnectionStrings=false /p:PackageAsSingleFile=true /p:DeployIisAppPath="Default Web Site" /p:SolutionDir="."
+RUN #msbuild ./IndexerService/IndexerService.csproj /p:PackageLocation="..\PublishOutput\ZipWebApiApp" /p:DeployOnBuild=true /p:Configuration=Release /p:WebPublishMethod=Package /p:DeployTarget=WebPublish /p:AutoParameterizationWebConfigConnectionStrings=false /p:PackageAsSingleFile=true /p:DeployIisAppPath="Default Web Site" /p:SolutionDir="."
+
+RUN msbuild ./IndexerService/IndexerService.csproj /p:DeployOnBuild=true /p:Configuration=Release 
 
 
 FROM debian:10 AS deploy

@@ -1,7 +1,7 @@
 using System.IO;
 using System.Linq;
 
-namespace SearchEngine.Indexer
+namespace SearchifyEngine.Indexer
 {
     /// <summary>
     /// Index term representation, stores file delta, frequency and positions of word

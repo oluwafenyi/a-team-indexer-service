@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.0.54" />
+      <PackageReference Include="InvertedTomato.IntegerCompression" Version="3.0.0" />
+      <PackageReference Include="MoreComplexDataStructures" Version="1.9.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="protobuf-net" Version="3.0.101" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0-preview.6.21352.12" />
+      <PackageReference Include="TikaOnDotnet.TextExtractor" Version="1.17.1" />
+    </ItemGroup>
+
+</Project>

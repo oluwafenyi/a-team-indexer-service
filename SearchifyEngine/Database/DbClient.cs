@@ -6,16 +6,18 @@ using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using Amazon.Runtime.CredentialManagement;
-using SearchEngine.Database.Models;
+using SearchifyEngine.Store;
 
-namespace SearchEngine.Database
+namespace SearchifyEngine.Database
 {
     public static class DbClient
     {
         private static readonly string Host = Config.DatabaseHost;
         private static readonly int Port = Config.DatabasePort;
         private static readonly string EndpointUrl = "http://" + Host + ":" + Port;
-        public static AmazonDynamoDBClient Client;
+
+        private static AmazonDynamoDBClient _client;
+        public static InvertedIndexDynamoDbStore Store;
 
         private static bool IsPortInUse()
         {
@@ -31,13 +33,13 @@ namespace SearchEngine.Database
 
             return true;
         }
-
+        
         private static void WriteProfile(string profileName)
         {
             var options = new CredentialProfileOptions
             {
-                AccessKey = Environment.GetEnvironmentVariable("ACCESS_KEY") ?? "null",
-                SecretKey = Environment.GetEnvironmentVariable("SECRET_KEY") ?? "null"
+                AccessKey = Environment.GetEnvironmentVariable("AWS_ACCESS_KEY") ?? "null",
+                SecretKey = Environment.GetEnvironmentVariable("AWS_SECRET_KEY") ?? "null"
             };
             var profile = new CredentialProfile(profileName, options);
             var sharedFile = new SharedCredentialsFile();
@@ -47,7 +49,6 @@ namespace SearchEngine.Database
         public static bool CreateClient(bool useLocal)
         {
             WriteProfile("default");
-            
             if (useLocal)
             {
                 var portUsed = IsPortInUse();
@@ -64,7 +65,7 @@ namespace SearchEngine.Database
                 };
                 try
                 {
-                    Client = new AmazonDynamoDBClient(ddbConfig);
+                    _client = new AmazonDynamoDBClient(ddbConfig);
                 }
                 catch (Exception ex)
                 {
@@ -74,15 +75,16 @@ namespace SearchEngine.Database
             }
             else
             {
-                Client = new AmazonDynamoDBClient();
+                _client = new AmazonDynamoDBClient();
             }
 
+            Store = new InvertedIndexDynamoDbStore(_client);
             return true;
         }
 
         public static async Task<bool> CheckTableExists(string tableName)
         {
-            var response = await Client.ListTablesAsync();
+            var response = await _client.ListTablesAsync();
             return response.TableNames.Contains(tableName);
         }
 
@@ -103,7 +105,7 @@ namespace SearchEngine.Database
 
                 try
                 {
-                    await Client.CreateTableAsync(request);
+                    await _client.CreateTableAsync(request);
                 }
                 catch (Exception e)
                 {
@@ -138,7 +140,7 @@ namespace SearchEngine.Database
 
             if (status)
             {
-                await InvertedIndex.SetLastId(0);
+                await Store.SetLastId(0);
             }
         }
 
@@ -148,7 +150,7 @@ namespace SearchEngine.Database
 
             try
             {
-                var response = await Client.DescribeTableAsync(tableName);
+                var response = await _client.DescribeTableAsync(tableName);
                 result = response.Table;
             }
             catch (Exception e)

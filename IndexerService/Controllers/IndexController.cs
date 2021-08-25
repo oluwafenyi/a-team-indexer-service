@@ -12,7 +12,7 @@ using System.Web.Http.ValueProviders;
 using Hangfire;
 using IndexerService.Core;
 using IndexerService.Models;
-using SearchEngine.Database.Models;
+using SearchifyEngine.Database;
 
 namespace IndexerService.Controllers
 {
@@ -57,7 +57,7 @@ namespace IndexerService.Controllers
             if (ModelState.IsValid)
             {
                 ModelStateDictionary modelStateDictionary = new ModelStateDictionary();
-                uint lastId = await InvertedIndex.GetLastId();
+                uint lastId = await DbClient.Store.GetLastId();
                 
                 foreach (var document in data)
                 {

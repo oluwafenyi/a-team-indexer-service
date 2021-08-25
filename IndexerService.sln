@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndexerService", "IndexerService\IndexerService.csproj", "{53F18513-374E-4A3E-B215-BF4A057F730C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchEngine", "SearchEngine\SearchEngine.csproj", "{6099FE92-5219-4640-B50C-66DD4C61C104}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchifyEngine", "SearchifyEngine\SearchifyEngine.csproj", "{6B7B50FE-03CF-4BEA-87C1-F07518A484E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,9 +14,9 @@ Global
 		{53F18513-374E-4A3E-B215-BF4A057F730C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53F18513-374E-4A3E-B215-BF4A057F730C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53F18513-374E-4A3E-B215-BF4A057F730C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6099FE92-5219-4640-B50C-66DD4C61C104}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6099FE92-5219-4640-B50C-66DD4C61C104}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6099FE92-5219-4640-B50C-66DD4C61C104}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6099FE92-5219-4640-B50C-66DD4C61C104}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B7B50FE-03CF-4BEA-87C1-F07518A484E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B7B50FE-03CF-4BEA-87C1-F07518A484E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B7B50FE-03CF-4BEA-87C1-F07518A484E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B7B50FE-03CF-4BEA-87C1-F07518A484E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
