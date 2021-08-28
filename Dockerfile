@@ -42,6 +42,6 @@ RUN apt-get update -y && apt-get install dirmngr gnupg apt-transport-https ca-ce
 
 COPY --from=0 /usr/app/IndexerService/ ./
 
-EXPOSE 5000
+EXPOSE 5050
 
-CMD ["/usr/bin/mono-sgen", "/usr/lib/mono/4.5/xsp4.exe", "--port=5000"]
+CMD ["/usr/bin/mono-sgen", "/usr/lib/mono/4.5/xsp4.exe", "--port=5050"]
