@@ -137,11 +137,6 @@ namespace SearchifyEngine.Database
                 ReadCapacityUnits = 20,
                 WriteCapacityUnits = 50
             });
-
-            if (status)
-            {
-                await Store.SetLastId(0);
-            }
         }
 
         public static async Task<TableDescription> GetTableDescription(string tableName)

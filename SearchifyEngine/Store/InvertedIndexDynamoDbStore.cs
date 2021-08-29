@@ -29,7 +29,15 @@ namespace SearchifyEngine.Store
             GetItemResponse response;
             response = await _client.GetItemAsync(request);
             Dictionary<string, AttributeValue> item = response.Item;
-            return UInt32.Parse(item["id"].N);
+            
+            try
+            {
+                return UInt32.Parse(item["id"].N);
+            }
+            catch (KeyNotFoundException)
+            {
+                return 0;
+            }
         }
         
         public async Task<HttpStatusCode> SetLastId(uint lastId)
