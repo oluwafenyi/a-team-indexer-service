@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -79,10 +80,18 @@ namespace SearchifyEngine.Indexer
         /// <summary>
         /// Powerhouse function for indexing documents
         /// </summary>
-        /// <param name="filePath">a path or link to an indexable document</param>
+        /// <param name="fileUrl">a path or link to an indexable document</param>
         /// <param name="fileId">unique integer id for document</param>
-        public async Task Index(string filePath, uint fileId)
+        public async Task Index(string fileUrl, uint fileId)
         {
+            string filePath = ExtractDoc.Extract(fileUrl);
+
+            if (filePath == null)
+            {
+                Console.WriteLine("error: error getting file at -> " + fileUrl);
+                return;
+            }
+            
             // local map of word to positions
             Dictionary<string, List<uint>> map = new Dictionary<string, List<uint>>();
             TextExtractionResult content = _textExtractor.Extract(filePath);
@@ -113,6 +122,7 @@ namespace SearchifyEngine.Indexer
                 await _indexWord(word, delta, map[word]);
             }
 
+            ExtractDoc.Delete(filePath);
             LastId = fileId;
             await _store.SetLastId(fileId);
         }
