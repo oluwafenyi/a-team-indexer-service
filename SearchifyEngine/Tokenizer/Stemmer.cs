@@ -2,7 +2,11 @@ using System;
 
 namespace SearchifyEngine.Tokenizer
 {
-public class Stemmer
+    
+    /// <summary>
+    /// Porter Stemmer Class
+    /// </summary>
+    public class Stemmer
     {
         // The passed in word turned into a char array.
         // Quicker to use to rebuilding strings each time a change is made.

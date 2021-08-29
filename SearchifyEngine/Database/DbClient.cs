@@ -10,6 +10,10 @@ using SearchifyEngine.Store;
 
 namespace SearchifyEngine.Database
 {
+    
+    /// <summary>
+    /// Client library for interactions with DynamoDB
+    /// </summary>
     public static class DbClient
     {
         private static readonly string Host = Config.DatabaseHost;
@@ -17,6 +21,10 @@ namespace SearchifyEngine.Database
         private static readonly string EndpointUrl = "http://" + Host + ":" + Port;
 
         private static AmazonDynamoDBClient _client;
+        
+        /// <summary>
+        /// <see cref="InvertedIndexDynamoDbStore"/> instance associated with the client
+        /// </summary>
         public static InvertedIndexDynamoDbStore Store;
 
         private static bool IsPortInUse()
@@ -46,6 +54,11 @@ namespace SearchifyEngine.Database
             sharedFile.RegisterProfile(profile);
         }
 
+        /// <summary>
+        /// Connects to DynamoDB, and instantiates <see cref="DbClient.Store"/> value
+        /// </summary>
+        /// <param name="useLocal">set to true if you are using dynamodblocal</param>
+        /// <returns>status of client creation, true for success, false for failure</returns>
         public static bool CreateClient(bool useLocal)
         {
             WriteProfile("default");
@@ -82,13 +95,15 @@ namespace SearchifyEngine.Database
             return true;
         }
 
-        public static async Task<bool> CheckTableExists(string tableName)
+        // checks if table exists in database
+        private static async Task<bool> CheckTableExists(string tableName)
         {
             var response = await _client.ListTablesAsync();
             return response.TableNames.Contains(tableName);
         }
 
-        public static async Task<bool> CreateTable(string tableName, List<AttributeDefinition> tableAttributes,
+        // creates single db table
+        private static async Task<bool> CreateTable(string tableName, List<AttributeDefinition> tableAttributes,
             List<KeySchemaElement> tableKeySchema, ProvisionedThroughput provisionedThroughput)
         {
             bool response = true;
@@ -116,6 +131,9 @@ namespace SearchifyEngine.Database
             return response;
         }
         
+        /// <summary>
+        /// Creates necessary database tables if they do not already exist
+        /// </summary>
         public static async Task CreateTables()
         {
             bool status = await CreateTable("inverted_index", new List<AttributeDefinition>
@@ -139,6 +157,11 @@ namespace SearchifyEngine.Database
             });
         }
 
+        /// <summary>
+        /// Provides TableDescription for table specified. If table doesn't exist, null is returned.
+        /// </summary>
+        /// <param name="tableName">table name</param>
+        /// <returns>table description</returns>
         public static async Task<TableDescription> GetTableDescription(string tableName)
         {
             TableDescription result = null;

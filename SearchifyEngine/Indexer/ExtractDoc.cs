@@ -6,8 +6,20 @@ using System.Text;
 
 namespace SearchifyEngine.Indexer
 {
+    
+    /// <summary>
+    /// Indexer Utility class for document download
+    /// </summary>
     public class ExtractDoc {
+        
+        // temporary storage location for downloaded file
         private static string folder = "/tmp/";
+        
+        /// <summary>
+        /// This function downloads a document from a valid url
+        /// </summary>
+        /// <param name="url">valid document url</param>
+        /// <returns>filepath to downloaded document</returns>
         public static string Extract(string url)
         {
             try
@@ -39,6 +51,10 @@ namespace SearchifyEngine.Indexer
             return null;
         }
 
+        /// <summary>
+        /// Deletes file at specified path if the file exists
+        /// </summary>
+        /// <param name="path">absolute file path</param>
         public static void Delete(string path)
         {
             if (File.Exists(Path.Combine(Path.GetFullPath(folder), path)))
@@ -47,13 +63,14 @@ namespace SearchifyEngine.Indexer
             }
         }
 
-
+        // returns SHA256 hash byte array value of string
         private static byte[] GetHash(string inputString)
         {
             using (HashAlgorithm algorithm = SHA256.Create())
                 return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
         }
 
+        // returns SHA256 hash string value of string
         private static string GetHashString(string inputString)
         {
             StringBuilder sb = new StringBuilder();
