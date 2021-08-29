@@ -19,12 +19,19 @@ namespace SearchifyEngine.Indexer
         /// </summary>
         public uint LastId;
         
-        private TextExtractor _textExtractor = new TextExtractor();
+        // tika extractor
+        private readonly TextExtractor _textExtractor = new TextExtractor();
 
-        private IStore _store;
+        // index store
+        private readonly IStore _store;
 
-        public Dictionary<string, IndexTerm[]> ReverseIndex = new Dictionary<string, IndexTerm[]>();
+        // local reverse index representation for queries
+        private readonly Dictionary<string, IndexTerm[]> _reverseIndex = new Dictionary<string, IndexTerm[]>();
         
+        /// <summary>
+        /// Instantiates an Indexer object
+        /// </summary>
+        /// <param name="store">object that implements <see cref="IStore"/>></param>
         public Indexer(IStore store)
         {
             _store = store;
@@ -34,37 +41,48 @@ namespace SearchifyEngine.Indexer
             }).GetAwaiter().GetResult();
         }
 
-        public async Task LoadInvertedIndex(string[] queryTerms)
+        /// <summary>
+        /// Caches terms from store
+        /// </summary>
+        /// <param name="terms">array of terms</param>
+        public async Task LoadInvertedIndex(string[] terms)
         {
-            await Task.WhenAll(queryTerms.Select(async t =>
+            await Task.WhenAll(terms.Select(async t =>
             {
-                IndexTerm[] terms = await GetIndexTermArray(t);
-                ReverseIndex.Add(t, terms);
-                return terms;
+                IndexTerm[] indexTermList = await GetIndexTermArray(t);
+                _reverseIndex.Add(t, indexTermList);
+                return indexTermList;
             }));
         }
 
+        /// <summary>
+        /// Returns array of index terms from cache. If term hasn't been cached, an empty array is returned.
+        /// </summary>
+        /// <param name="term">term</param>
+        /// <returns>array of index terms</returns>
         public IndexTerm[] GetLoadedTermList(string term)
         {
-            return ReverseIndex[term];
+            try
+            {
+                return _reverseIndex[term];
+            }
+            catch (KeyNotFoundException)
+            {
+                return Array.Empty<IndexTerm>();
+            }
         }
 
         // initializes and appends index term to internal index
         private async Task _indexWord(string word, uint fileId, List<uint> positions)
         {
-            IndexTerm indexTerm;
-            indexTerm = new IndexTerm(fileId);
+            var indexTerm = new IndexTerm(fileId);
             List<uint> deltaArrayList = Utils.ToDeltaList(positions);
             indexTerm.AddPositions(deltaArrayList.ToArray());
             await _store.AppendIndexTerm(word, indexTerm);
         }
-
-        /// <summary>
-        /// Returns index list associated with <paramref name="word"/>
-        /// </summary>
-        /// <param name="word">any string</param>
-        /// <returns>Index list of word</returns>
-        public async Task<IndexTerm[]> GetIndexTermArray(string word)
+        
+        // gets index term list from store
+        private async Task<IndexTerm[]> GetIndexTermArray(string word)
         {
             List<IndexTerm> list = await _store.GetIndexTermList(word);
             return list.ToArray();

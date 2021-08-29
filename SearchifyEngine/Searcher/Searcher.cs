@@ -38,7 +38,16 @@ namespace SearchifyEngine.Searcher
             // initialize pq
             foreach (var term in queryTerms)
             {
-                heap.Insert(new Pointer(term, 0, _indexer.GetLoadedTermList(term)[0].FileDelta));
+                try
+                {
+                    heap.Insert(new Pointer(term, 0, _indexer.GetLoadedTermList(term)[0].FileDelta));
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                }
+                catch (IndexOutOfRangeException)
+                {
+                }
             }
             
             while (heap.Count > 0)

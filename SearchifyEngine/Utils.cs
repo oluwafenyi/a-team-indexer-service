@@ -17,7 +17,7 @@ namespace SearchifyEngine
         {
             text = Regex.Replace(text, "[^A-Za-z0-9 ]", " ").ToLower();
             text = Regex.Replace(text, @"\s+", " ");
-            return text;
+            return text.Trim();
         }
 
         /// <summary>
