@@ -25,7 +25,7 @@ namespace SearchifyEngine.Database
         /// <summary>
         /// <see cref="InvertedIndexDynamoDbStore"/> instance associated with the client
         /// </summary>
-        public static InvertedIndexDynamoDbStore Store;
+        public static IStore Store;
 
         private static bool IsPortInUse()
         {

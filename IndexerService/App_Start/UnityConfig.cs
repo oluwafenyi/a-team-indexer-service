@@ -12,7 +12,6 @@ namespace IndexerService
         public static void RegisterComponents()
         {
 			var container = new UnityContainer();
-            // var client = new BackgroundJobClient();
 
             container.RegisterSingleton<IBackgroundJobClient, BackgroundJobClient>();
             container.RegisterType<ApiController, IndexController>();

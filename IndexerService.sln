@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchifyEngine", "Searchif
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchifyEngine.Test", "SearchifyEngine.Test\SearchifyEngine.Test.csproj", "{D51C8EA3-0C7D-48E2-89C6-633702F06C93}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndexerService.Test", "IndexerService.Test\IndexerService.Test.csproj", "{21170EFF-2CAD-4173-A009-7A118576BAEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{D51C8EA3-0C7D-48E2-89C6-633702F06C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D51C8EA3-0C7D-48E2-89C6-633702F06C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D51C8EA3-0C7D-48E2-89C6-633702F06C93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21170EFF-2CAD-4173-A009-7A118576BAEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21170EFF-2CAD-4173-A009-7A118576BAEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21170EFF-2CAD-4173-A009-7A118576BAEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21170EFF-2CAD-4173-A009-7A118576BAEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
